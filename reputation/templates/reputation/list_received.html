@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ user_shown.username }}'s reputation{% endblock %}
+{% block content_title %}{{ user_shown.username }}'s reputation{% endblock %}
+{% block content %}
+<ul>
+{% for entry in entries %}
+    <li>{{ entry.points }} | {{ entry.from_user.username }} | {{ entry.time_added|date:"Y-m-d H:i" }} | {{ entry.description }}</li>
+{% empty %}
+    <li>Sorry, no reputations received.</li>
+{% endfor %}
+</ul>
+{% endblock %}

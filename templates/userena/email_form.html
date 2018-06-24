@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load widget_tweaks %}
+{% block content_title %}{% blocktrans with user.username as username %}Account &raquo; {{ username }}{% endblocktrans %}{% endblock %}
+
+{% block content %}
+<form action="" method="post">
+  {% include "_profile_navigation.html" %}
+  {% csrf_token %}
+    <div class="panel">
+        <div class="panel-body">
+          <fieldset>
+            <legend>{% trans "Change email address" %}</legend>
+              <div class="form-group">
+                  <label class="control-label">New email</label>
+                  {{ form.email|add_class:"form-control rounded-0 py-2"}}
+              </div>
+          </fieldset>
+        </div>
+    </div>
+  <input class="btn btn-primary" type="submit" value="{% trans "Change email" %}" />
+</form>
+{% endblock %}

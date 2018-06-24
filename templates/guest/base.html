@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <!-- Custom styles for this template -->
+    <link href="{% static 'full-slider.css' %}" rel="stylesheet">
+    {% block customcss %}{% endblock %}
+</head>
+
+<body>
+
+{% with url_name=request.resolver_match.url_name %}
+<!-- Navigation -->
+
+<nav class="navbar navbar-expand-md fixed-top">
+    <a class="navbar-brand" href="#">Czas wolny</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item {% if url_name == 'home' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="nav-item {% if url_name == 'about' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'about' %}#content-box">About</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item {% if url_name == 'userena_signin' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'userena_signin' %}#content-box">Sign in</a>
+            </li>
+            <li class="nav-item {% if url_name == 'userena_signup' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'userena_signup' %}#content-box">Sign up</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+
+<header id="startchange">
+    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner">
+            <div class="carousel-item active" style="background-image: url('http://static3.businessinsider.com/image/57baf8abdb5ce99d168b7f23-2400')">
+                <div class="carousel-caption d-none d-md-block">
+                    <h3>Meet New People!</h3>
+                </div>
+            </div>
+            <div class="carousel-item" style="background-image: url('https://www.citi.io/wp-content/uploads/2015/08/1168-00-06.jpg')">
+                <div class="carousel-caption d-none d-md-block">
+                    <h3>Organize Events!</h3>
+                </div>
+            </div>
+            <div class="carousel-item" style="background-image: url('http://www.lisbon-id.com/upload4mail/magnolia-portugal/op_56219_op_19740_fotoprincipal_7_.jpg')">
+                <div class="carousel-caption d-none d-md-block">
+                    <h3>Have Fun!</h3>
+                </div>
+            </div>
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+</header>
+
+{% endwith %}
+
+<!-- Page Content -->
+<section class="py-5" id="content-box" >
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="py-5 bg-primary">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Czas Wolny 2017</p>
+    </div>
+    <!-- /.container -->
+</footer>
+
+<!-- Bootstrap core JavaScript -->
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+{% block customjs %}{% endblock %}
+<script src="{% static 'navbar.js' %}"></script>
+
+
+</body>
+
+</html>

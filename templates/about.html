@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}About, zalogowany{% endblock %}
+
+{% block content %}
+O stronie (zalogowany)...<br>
+{{user.email}}<br>
+{{user.my_profile.favourite_snack}}<br>
+{{usernm}}
+<p><h1>Opis projektu grupowego do organizacji czasu wolnego.</h1></p><br>
+<p><i>Główną funkcjonalnością aplikacji byłaby aranżacja spotkań między użytkownikami systemu.<br><br>
+
+Osoba zainteresowana aplikacją, powinna w pierwszej kolejności zarejestrować się, wypełniając pola formularza rejestracyjnego. Formularz będzie zawierał podstawowe dane o użytkowniku, takie jak imię, nazwisko, płeć, wiek, e-mail. Po zakończonej rejestracji, będziemy mogli logować się do aplikacji za pomocą e-maila/loginu i hasła. Każdy zarejestrowany użytkownik będzie miał swój profil, gdzie będą znajdowały się szczegółowe informacje na jego temat.<br><br>
+
+Użytkownik, chcący zorganizować swój czas wolny, tworzy w aplikacji wydarzenie, przykładowo wybiera, że chciałby pójść do klubu gwint w okolicach 21:00, 10 października 2017. Oczywiście przydałaby się jakaś osoba lub grupa osób do towarzystwa. Taki użytkownik ma możliwość ustawienia w ile osób chce się udać w to miejsce , lub wyszukać a następnie dołączyć do istniejącego wydarzenia ( o ile znajdują się wolne miejsca). Osoba zakładająca wydarzenie ma możliwość ingerencji w to z kim uda się w wybrane miejsce. Użytkownicy którzy są przypisani do danego wydarzenia , mają możliwość prowadzenia konwersacji pod wydarzeniem.System pozwala na anulowanie spotkania(mogą zostać odjęte punkty, aby taki incydent więcej się nie powtarzał).<br><br>
+
+Oczywiście możliwości spotkań jest bardzo dużo, od spotkań w plenerze aż po teatry/wesela.<br><br>
+</i></p>
+{% endblock %}

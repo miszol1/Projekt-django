@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+
+{% block title %}Events list{% endblock %}
+
+{% block content_title %}Events list{% endblock %}
+
+{% block content %}
+
+<style>
+
+#myUL {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+
+</style>
+
+<div class="input-group col-md-8">
+      <input type="text" id="myInput" onkeyup="myFunction()" class="form-control rounded-0 py-2" placeholder="name of the event/tag">
+      <span class="input-group-btn">
+      </span>
+
+        <script>
+        function myFunction() {
+        var input, filter, ul, li, a, b, i;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        ul = document.getElementById("myUL");
+        li = ul.getElementsByTagName("li");
+        for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("h5")[0];
+        b = li[i].getElementsByTagName("h4")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        }
+        else if(b.innerHTML.toUpperCase().indexOf(filter) > -1){
+            li[i].style.display = "";
+        } 
+        else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+</script>
+
+            <i class="fa fa-search"></i>
+      
+</div>
+<a role="button" class="btn btn-primary" href="{% url 'events:observing' %}">Show observed events</a>
+<br>
+<div class="doclona" id="doclonaid">
+    <ul id="myUL">
+        <div class="list-group" id="list-group">
+            {% for event in events %}
+                 <li>
+                    <div class="1row" id="1rowid">
+                        <a href="{% url 'events:details' event.pk %}" class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1" id="event.name" >{{event.name}}</h5>
+                                <small>{{ event.start_date.day }}-{{ event.start_date.month }}-{{ event.start_date.year }}</small>
+                            </div>
+                            <p class="mb-1">
+                            {{event.description}}
+                            </p>
+                            <h4 class="mb-1" id="event.tag" hidden>
+                                {{event.tags.names}}
+                            </h4>
+                        </a>
+                    </div>
+                 </li>
+            {% endfor %}
+            {% if events.has_other_pages %}
+              <ul class="pagination">
+                {% if events.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ events.previous_page_number }}" tabindex="-1">Previous</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                </li>
+                {% endif %}
+                {% for i in events.paginator.page_range %}
+                    {% if events.number == i %}
+                    <li class="page-item active">
+                        <a class="page-link" href="#">{{ i }} <span class="sr-only">(current)</span></a>
+                    </li>
+                    {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                    </li>
+                  {% endif %}
+                {% endfor %}
+                {% if events.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ events.next_page_number }}">Next</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+                {% endif %}
+              </ul>
+            {% endif %}
+        </div>
+    </ul>
+</div>
+<br>
+<a role="button" class="btn btn-primary" href="{% url 'events:create' %}">Add new event
+</a>
+
+
+{% endblock %}

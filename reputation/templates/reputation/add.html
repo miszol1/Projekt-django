@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Add reputation{% endblock %}
+{% block content_title %}Add reputation to {{ user_target.username }}{% endblock %}
+{% block content %}
+<form method="POST" class="post-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>
+{% endblock %}

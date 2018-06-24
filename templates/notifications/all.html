@@ -1,0 +1,16 @@
+{% extends "notifications/base.html" %}
+{% load i18n %}
+{% load notification_tags %}
+{% block title %}{% trans "Notifications" %}{% endblock %}
+{% block content_title %}{% trans "Notifications" %}{% endblock %}
+{% block content %}
+    <button class="mark-all-notifications btn btn-primary" data-mark-action="read">{% trans "Mark all as read" %}</button>
+    <button class="mark-all-notifications btn btn-primary" data-mark-action="unread">{% trans "Mark all as unread" %}</button>
+    <ul class="notifications list-group">
+    {% if notifications %}
+    {% render_notifications using notifications %}
+    {% else %}
+        <li class="list-group-item">No new notifications</li>
+    {% endif %}
+    </ul>
+{% endblock %}

@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}Event details{% endblock %}
+{% block customcss %}
+    <link href="{% static 'css/message_list.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block content_title %}{{event.name}}{% endblock %}
+
+{% block content %}
+    <div class="content">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card card-profile">
+                            <div class="card-avatar">
+                                <img class="img" src="{{ event.author.my_profile.get_mugshot_url }}" alt="{% trans "Your mugshot" %}" />
+                            </div>
+                            <div class="content">
+                                <h4 class="card-title">{{ event.author.first_name }} {{ event.author.last_name }}</h4>
+                            </div>
+                        </div>
+                        <div class="card card-stats">
+                            <div class="card-header" data-background-color="red">
+                                <i class="material-icons">favorite</i>
+                            </div>
+                            <div class="card-content">
+                                <p class="category">Likes</p>
+                                <h3 class="title">{{ event.likes.count }}</h3>
+                            </div>
+                            <div class="card-footer">
+                                {% if request.user in event.likes.all %}
+                                    <form class="btn-group btn-block" action="{% url 'events:unlike' event.pk %}" method="POST">
+                                        {% csrf_token %}
+                                        <button class="btn btn-danger btn-block">Dislike</button>
+                                        <input type="hidden" class="btn btn-block"/>
+                                    </form>
+                                {% else %}
+                                    <form class="btn-group btn-block" action="{% url 'events:like' event.pk %}" method="POST">
+                                        {% csrf_token %}
+                                        <button class="btn btn-primary btn-block">Like</button>
+                                        <input type="hidden" class="btn btn-block"/>
+                                    </form>
+                                {% endif %}
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="title">Event description</h4>
+                            </div>
+                            <div class="card-content">
+                                {{ event.description }}
+                            </div>
+                            <div class="card-footer">
+                                Start date: {{ event.start_date.day }}-{{ event.start_date.month }}-{{ event.start_date.year }}
+                                <br>
+                                End date: {{ event.end_date.day }}-{{ event.end_date.month }}-{{ event.end_date.year }}
+                            </div>
+                        </div>
+                        <div>
+                            <strong>Tags</strong><br>
+                            {% for tag in event.tags.all %}
+                                <div class="btn btn-sm btn-info btn-round">{{tag.name}}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="row2">
+
+                </div>
+                <div class="row3">
+                    <div class="row">
+                        <span class="pull-right">
+                            <a role="button" class="btn btn-sm btn-primary" href="{% url 'posts:create' event.pk %}">Add new post</a>
+                        </span>
+                        <h4 class="card-header">Posts</h4>
+                    </div>
+                    <div class="row">
+                        <div class="list-group">
+                            {% for post in posts %}
+                                <a href="{% url 'posts:details' event.pk post.pk %}" class="list-group-item">
+                                    <div class="content">
+                                        <h4 class="">{{post.author.first_name}}{{post.author.last_name}}</h4>
+                                        <p class="mb-1">
+                                            {{post.content}}
+                                        </p>
+                                        <small><i class="material-icons">access_time</i>{{ post.publish_date.day }}-{{ post.publish_date.month }}-{{ post.publish_date.year }}
+                                        <i class="material-icons">favorite</i>
+                                        {{ post.likes.count }}</small>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                            {% if posts.has_other_pages %}
+                              <ul class="pagination">
+                                {% if posts.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?posts-page={{ posts.previous_page_number }}" tabindex="-1">Previous</a>
+                                </li>
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                </li>
+                                {% endif %}
+                                {% for i in posts.paginator.page_range %}
+                                    {% if posts.number == i %}
+                                    <li class="page-item active">
+                                        <a class="page-link" href="#">{{ i }} <span class="sr-only">(current)</span></a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?posts-page={{ i }}">{{ i }}</a>
+                                    </li>
+                                  {% endif %}
+                                {% endfor %}
+                                {% if posts.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?posts-page={{ posts.next_page_number }}">Next</a>
+                                </li>
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#">Next</a>
+                                </li>
+                                {% endif %}
+                              </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-4">
+                <div class="card row">
+                    <div class="card-header">
+                        <h4 class="title">Place</h4>
+                        <p class="category">{{event.place_text}}</p>
+                    </div>
+                    <div class="card-content">
+                        <img src="https://maps.googleapis.com/maps/api/staticmap?center={{event.place_location_lat}},{{event.place_location_lng}}&zoom=15&size=400x400&markers=color:orange|label:S|{{event.place_location_lat}},{{event.place_location_lng}}&key=AIzaSyCDnACvF6RYeBiUBOjLgaTQAwPiN0ABVzU"/>
+                    </div>
+                </div>
+                <div class="row2">
+                    <div class="row2">
+                            {% if event in request.user.my_profile.observing_events.all %}
+                                <form class="btn-group inline" action="{% url 'events:stop_observing' event.pk %}" method="POST">
+                                    {% csrf_token %}
+                                    <button class="btn btn-sm btn-danger">Unobserve</button>
+                                    <input type="hidden" class="btn"/>
+                                </form>
+                            {% else %}
+                                <form class="btn-group inline" action="{% url 'events:observe' event.pk %}" method="POST">
+                                    {% csrf_token %}
+                                    <button class="btn btn-sm btn-primary">Observe</button>
+                                    <input type="hidden" role="button" class="btn" />
+                                </form>
+                            {% endif %}
+
+                            {% if request.user in event.users.all %}
+                                <form class="btn-group inline" action="{% url 'events:leave' event.pk %}" method="POST">
+                                    {% csrf_token %}
+                                    <button class="btn btn-sm btn-danger">Leave</button>
+                                    <input type="hidden" class="btn"/>
+                                </form>
+                            {% elif request.user not in event.blacklist.all %}
+                                <form class="btn-group inline" action="{% url 'events:join' event.pk %}" method="POST">
+                                    {% csrf_token %}
+                                    <button class="btn btn-sm btn-primary">Join</button>
+                                    <input type="hidden"  class="btn"/>
+                                </form>
+                            {% endif %}
+
+                            {% ifequal user event.author %}
+                                <form class="btn-group inline" action="{% url 'events:destroy' event.pk %}" method="POST">
+                                    {% csrf_token %}
+                                    <button class="btn btn-sm btn-danger">Delete</button>
+                                    <input type="hidden" class="btn"/>
+                                </form>
+                            {% endifequal %}
+
+                    </div>
+                </div>
+                <div class="row2">
+                    <h4 class="card-title">People who joined event</h4>
+                    <div class="list-group">
+                        {% for user in event.users.all %}
+                            <a href="{% url 'userena_profile_detail' user.username %}" class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <img class="avatar" src="{{ user.my_profile.get_mugshot_url }}"/>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h4 class="list-group-item-heading">{{ user }}</h4>
+                                        <p class="list-group-item-text">{{ user.first_name }} {{ user.last_name }}</p>
+                                    </div>
+                                    <div class="col-md-3">
+                                        {% if request.user == event.author  %}
+                                            <span class="pull-right">
+                                                <form class="list-group-item-text" action="{% url 'events:block' event.pk user.my_profile.user_id %}" method="POST">
+                                                    {% csrf_token %}
+                                                    <input type="submit" role="button" class="btn btn-sm btn-danger" value="Remove"/>
+                                                </form>
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                    {% if request.user == event.author %}
+                        <h4 class="card-title">People blocked from this event</h4>
+                        <div class="list-group">
+                        {% for user in event.blacklist.all %}
+                            <a href="{% url 'userena_profile_detail' user.username %}" class="list-group-item clearfix">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <img class="avatar" src="{{ user.my_profile.get_mugshot_url }}"/>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h4 class="list-group-item-heading">{{ user }}</h4>
+                                        <p class="list-group-item-text">{{ user.first_name }} {{ user.last_name }}</p>
+                                    </div>
+                                    <div class="col-md-3">
+                                        {% if request.user == event.author  %}
+                                            <span class="pull-right">
+                                                <form class="list-group-item-text" action="{% url 'events:unblock' event.pk user.my_profile.user_id %}" method="POST">
+                                                    {% csrf_token %}
+                                                    <input type="submit" role="button" class="btn btn-sm btn-danger" value="Remove"/>
+                                                </form>
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </a>
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

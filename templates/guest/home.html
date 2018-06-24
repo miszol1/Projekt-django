@@ -1,0 +1,14 @@
+{% extends "guest/base.html" %}
+
+{% block title %}Strona główna{% endblock %}
+
+{% block content %}
+<div class="inner cover">
+    <h1 class="cover-heading">Welcome</h1>
+    <p class="lead">Please log in or sign up to use our web application</p>
+    <p class="lead">
+        <a href="{% url 'userena_signin' %}#content-box" class="btn btn-lg btn-primary">Log in</a>
+        <a href="{% url 'userena_signup' %}#content-box" class="btn btn-lg btn-primary">Sign up</a>
+    </p>
+</div>
+{% endblock %}

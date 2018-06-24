@@ -1,0 +1,80 @@
+.well{
+    padding-left:0px;
+}
+.messages {
+    padding-left: 0px;
+
+    height: 400px;
+    min-height: calc(100% - 93px);
+    max-height: calc(100% - 93px);
+    overflow-y: scroll;
+    overflow-x: hidden;
+    overflow-wrap: break-word;
+}
+
+@media screen and (max-width: 735px) {
+    .messages {
+        max-height: calc(100% - 105px);
+    }
+}
+.messages::-webkit-scrollbar {
+    width: 8px;
+    background: transparent;
+}
+.messages::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+.messages ul li {
+    display: inline-block;
+    clear: both;
+    float: right;
+    margin: 15px 15px 5px 15px;
+    width: calc(100% - 25px);
+    font-family: "proxima-nova", "Source Sans Pro", sans-serif;
+    font-size: 1em;
+    letter-spacing: 0.1px;
+}
+.messages ul li:nth-last-child(1) {
+    margin-bottom: 20px;
+}
+.messages ul li.sent img {
+    margin: 6px 0 0 8px;
+}
+.messages ul li.sent p {
+    float: right;
+    text-align: right;
+    background: #007bff;
+    color: #FFFFFF;
+}
+.messages ul li.replies img {
+    float: left;
+    margin: 6px 8px 0 0;
+}
+.messages ul li.replies p {
+    background: #FFFFFF;
+    float: left;
+}
+.messages ul li img {
+    width: 50px;
+    border-radius: 50%;
+    float: right;
+}
+.messages ul li p {
+    margin-top: 20px;
+    display: inline-block;
+    padding: 10px 15px;
+    border-radius: 20px;
+    max-width: 205px;
+    line-height: 130%;
+}
+.messages ul li small {
+    font-size: 0.8em !important;
+}
+.messages ul li.sent small {
+    float: right;
+}
+@media screen and (min-width: 735px) {
+    .messages ul li p {
+        max-width: 300px;
+    }
+}

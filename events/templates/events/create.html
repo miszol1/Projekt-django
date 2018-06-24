@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}Tworzenie wydarzenia{% endblock %}
+{% block content_title %}New Event{% endblock %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'events/googlemaps.css' %}" />
+{% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <strong>"{{field.name}}" {{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+    <form class="row" method="POST" class="post-form">{% csrf_token %}
+      <div class="panel">
+        <div class="panel-body">
+          <div class="col-md-5">
+              <div class="form-group">
+                  <label class="bmd-label-floating">Name</label>
+                  {{ form.name|add_class:"form-control rounded-0 py-2"|append_attr:"placeholder: Event name" }}
+                  {{ form.name.errors }}
+              </div>
+              <div class="form-group">
+                  <label class="bmd-label-floating">Description</label>
+                  {{ form.description|add_class:"form-control rounded-0 py-2" }}
+                  {{ form.description.errors }}
+              </div>
+              <div class="form-group">
+                  <label class="bmd-label-floating">Start date</label>
+                  {{ form.start_date|add_class:"form-control rounded-0 py-2"|append_attr:"placeholder: Start date" }}
+                  {{ form.start_date.errors }}
+              </div>
+              <div class="form-group">
+                  <label class="bmd-label-floating">End date</label>
+                  {{ form.end_date|add_class:"form-control rounded-0 py-2"|append_attr:"placeholder: End date" }}
+                  {{ form.end_date.errors }}
+              </div>
+              <div class="form-group">
+                  <label class="bmd-label-floating">Place</label>
+                  {{ form.place_text|add_class:"form-control rounded-0 py-2"|append_attr:"placeholder: Place" }}
+                  {{ form.place_text.errors }}
+              </div>
+              <button type="submit" class="btn btn-primary">Add Event</button>
+          </div>
+          <div class="col-md-7">
+              <div class="card row card-content map_canvas"></div>
+              <input class="form-control" id="geocomplete" type="text" placeholder="Type in an address" value="Polska, Białystok" />
+              <input class="btn btn-primary btn-sm" id="find" type="button" value="Find on map" />
+          </div>
+          <input type="hidden" name="place_location_lat" id="id_place_location_lat" />
+          <input type="hidden" name="place_location_lng" id="id_place_location_lng" />
+        </div>
+      </div>
+    </form>
+<br>
+{% endblock %}
+
+{% block customjs %}
+    <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCDnACvF6RYeBiUBOjLgaTQAwPiN0ABVzU&sensor=false&libraries=places"></script>
+    <script src="{% static 'events/googlemaps.js' %}"></script>
+
+    <script>
+      $(function(){
+        $("#geocomplete").geocomplete({
+          map: ".map_canvas",
+          details: "form ",
+          types: ["establishment"],
+          markerOptions: {
+            draggable: true
+          }
+        });
+
+
+        $("#geocomplete").bind("geocode:dragged", function(event, latLng){
+          $("input[name=place_location_lat]").val(latLng.lat());
+          $("input[name=place_location_lng]").val(latLng.lng());
+          $("input[name=place_text]").val("");
+        });
+
+
+        $("#find").click(function(){
+          $("#geocomplete").trigger("geocode");
+        }).click();
+      });
+    </script>
+{% endblock %}

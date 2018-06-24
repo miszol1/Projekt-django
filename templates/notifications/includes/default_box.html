@@ -1,0 +1,14 @@
+<li data-nf-id="{{ notification.id }}"
+class="notification dropdown-item {{ notification.read|yesno:'read,unread' }}">
+    <a href="{{ notification.actor_url }}">{{ notification.actor }}
+      {{ notification.verb }} {{ notification.created|timesince }} ago
+      <button data-id="{{ notification.id }}" class="mark-notification btn btn-danger btn-sm"
+          data-mark-action="{{ notification.read|yesno:'unread,read' }}"
+          data-toggle-text="Mark as {{ notification.read|yesno:_('read,unread') }}">
+
+          Mark as {{ notification.read|yesno:'unread,read' }}
+
+      </button>
+      <button class="delete-notification btn btn-danger btn-sm" data-id="{{ notification.id }}">X</button>
+    </a>
+</li>

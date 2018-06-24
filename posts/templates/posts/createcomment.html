@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% load widget_tweaks %}
+{% block title %}Tworzenie komentarza{% endblock %}
+{% block content_title %}<h2>New Comment</h2>{% endblock %}
+{% block content %}
+
+     <form method="POST" class="post-form">{% csrf_token %}
+         <fieldset>
+             <div class="form-group">
+                 <label class="bmd-label-floating">Comment content</label>
+                 {{ form.content|add_class:"form-control rounded-0 py-2"|append_attr:"placeholder: Text" }}
+             </div>
+         </fieldset>
+        <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+<br>
+
+{% endblock %}

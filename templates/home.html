@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Strona główna, zalogowany{% endblock %}
+{% block content_title %}
+    Dashboard
+{% endblock %}
+
+{% block content %}
+    <style>
+
+    #myUL {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+
+    </style>
+    <h2>Your Events</h2>
+    <div class="doclona" id="doclonaid">
+        <ul id="myUL">
+          <div class="list-group" id="list-group">
+          {% for event in events %}
+          <li>
+            <div class="1row" id="1rowid">
+              <a href="{% url 'events:details' event.pk %}" class="list-group-item list-group-item-action flex-column align-items-start">
+              <div class="d-flex w-100 justify-content-between">
+                      <h5 class="mb-1" id="event.name" >{{event.name}}</h5>
+                  <small>{{ event.start_date.day }}-{{ event.start_date.month }}-{{ event.start_date.year }}</small>
+              </div>
+              <p class="mb-1">
+              {{event.description}}
+              </p>
+              <h4 class="mb-1" id="event.tag" hidden>
+              {{event.tags.names}}
+              </h4>
+             </a>
+           </div>
+          </li>
+          {% endfor %}
+              </div>
+        </ul>
+    </div>
+    {% if request.user.my_profile.ban == 2 %}
+        Your account has been banned
+{% endif %}
+{% endblock %}

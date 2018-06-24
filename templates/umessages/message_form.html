@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load widget_tweaks %}
+{% block title %}Create new message{% endblock %}
+{% block content_title %}New message{% endblock %}
+{% block content %}
+
+    <form action="" method="post" id="compose_message_form">
+
+        {% csrf_token %}
+
+        <fieldset>
+
+            <legend>Compose message</legend>
+            <div class="form-group">
+                {{ form.to|add_class:"form-control rounded-0 py-2"|append_attr:"placeholder: Receiver" }}
+            </div>
+            <div class="form-group">
+                {{ form.body|add_class:"form-control rounded-0 py-2"|append_attr:"placeholder: Message text" }}
+            </div>
+
+        </fieldset>
+
+        <input class="btn btn-primary" type="submit" name="send" value="{% trans "Send" %}" />
+
+    </form>
+
+{% endblock %}

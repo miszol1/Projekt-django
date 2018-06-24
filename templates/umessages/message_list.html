@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load i18n umessages_tags static%}
+
+{% block customcss %}
+<link href="{% static 'css/message_list.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block title %}Messages{% endblock %}
+{% block content_title %}{% trans "Messages" %}{% endblock %}
+{% block content %}
+{% get_unread_message_count_for user as unread_message_count %}
+{% blocktrans %}{{ unread_message_count }} new messages{% endblocktrans %}
+</br>
+<a class="btn btn-primary" href="{% url 'userena_umessages_compose' %}">{% trans "Create new message" %}</a>
+<div class="list-group">
+  {% for message in message_list %}
+  
+   
+    {% if message.um_from_user == user %}
+    <a href="{% url 'userena_umessages_detail' message.um_to_user.username %}" class="list-group-item">
+      <img class="avatar"src="{% if message.um_from_user == user %}{{message.um_to_user.my_profile.get_mugshot_url}}{% else %}{{message.um_from_user.my_profile.get_mugshot_url}}{% endif %}"/>
+      <div class="contact-info">
+        <h4 class="list-group-item-heading"> {{ message.um_to_user }}</h4>
+        {% get_unread_message_count_between user and message.um_to_user as unread_between_count %}
+        <p class="list-group-item-text"></p>
+        {% blocktrans with message.latest_message as latest_message %}{{ latest_message }} ({{ unread_between_count }} new){% endblocktrans %}
+      </div>
+    </a>
+    {% else %}
+    <a href="{% url 'userena_umessages_detail' message.um_from_user.username %}" class="list-group-item">
+      <img class="avatar" src="{% if message.um_from_user == user %}{{message.um_to_user.my_profile.get_mugshot_url}}{% else %}{{message.um_from_user.my_profile.get_mugshot_url}}{% endif %}"/>
+      <div class="contact-info">
+        <h4 class="list-group-item-heading">{{ message.um_from_user }}</h4>
+        {% get_unread_message_count_between user and message.um_from_user as unread_between_count %}
+        <p class="list-group-item-text"></p>
+        {% blocktrans with message.latest_message as latest_message %}{{ latest_message }} ({{ unread_between_count }} new){% endblocktrans %}
+      </div>
+    </a>
+    {% endif %}
+    
+
+  {% endfor %}
+</div>
+{% endblock %}

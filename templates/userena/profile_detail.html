@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block customcss %}
+<link href="{% static 'css/message_list.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block title %}{% blocktrans with profile.user.username as username %}{{ username }}'s profile.{% endblocktrans %}{% endblock %}
+{% block content_title %} {% if profile.user.get_full_name %}<b>{{ profile.user.get_full_name }} </b>{% endif %}{{ profile.user.username }}{% endblock %}
+
+{% block content %}
+  {% include "_profile_navigation.html" %}
+  <div class="panel">
+    <div class="panel-body">
+      {% block profile_details %}
+        <div class="row">
+          <div class="col-md-3 col-lg-3">
+            <img class="mugshot" src="{{ profile.get_mugshot_url }}" alt="{% trans "Your mugshot" %}" />
+          </div>
+          <div class="col-md-9 col-lg-9">
+            {% block profile_definition_list %}
+              {% if profile.user.get_full_name %}
+                <dt>{% trans "Name" %}</dt>
+                <dd>{{ profile.user.get_full_name }}</dd>
+              {% endif %}
+              {% if profile.user.get_full_name %}
+                <dt>{% trans "Full name" %}</dt>
+                <dd>{{ profile.user.get_full_name }}</dd>
+              {% endif %}
+              {% if profile.user.email and not hide_email %}
+                <dt>{% trans "Email" %}</dt>
+                <dd>{{ profile.user.email }}</dd>
+              {% endif %}
+              {% if profile.user.my_profile.gender %}
+                <dt>{% trans "Gender" %}</dt>
+                <dd>{% if profile.user.my_profile.gender == 1 %}Male{% else %}Female{% endif %}</dd>
+              {% endif %}
+              {% if profile.age %}
+                <dt>{% trans "Age" %}</dt>
+                <dd>{{ profile.age }}</dd>
+              {% endif %}
+              {% if profile.about_me %}
+                <dt>{% trans "About me" %}</dt>
+                <dd>{{ profile.about_me }}</dd>
+              {% endif %}
+              <dt>Reputation</dt>
+              {% if profile.reputation_points %}
+                <dd><a href="{% url 'reputation_show_received' profile.user.username %}">{{ profile.reputation_points }}</a></dd>
+              {% else %}
+                <dd>No reputation</dd>
+              {% endif %}
+            {% endblock %}
+          </div>
+        </div>
+      {% endblock %}
+      </div>
+  </div>
+
+{% if user.username == profile.user.username%}
+{% if request.user.my_profile.friends.count > 0 %}
+<h3>Friends</h3>
+
+
+{% endif %}
+<div class="list-group">
+  {% for user in request.user.my_profile.friends.all %}
+  <a href="{% url 'userena_profile_detail' user.username %}" class="list-group-item">
+    <img class="avatar" src="{{ user.my_profile.get_mugshot_url}}" />  
+    <div class="contact-info">
+      <h4 class="list-group-item-heading">{{ user }}</h4>
+      <p class="list-group-item-text">
+      {{ user.first_name }} {{ user.last_name }}
+      </p>
+    </div>
+  </a>
+{% endfor %}
+    </div>
+{% if request.user.my_profile.invites.count > 0 %}
+<p>
+Invites:
+</p>
+{% endif %}
+<div class="list-group">
+{% for user in request.user.my_profile.invites.all %}
+<a href="{% url 'userena_profile_detail' user.username %}" class="w-25 list-group-item list-group-item-dark">
+    <p class="mb-1">
+    {{ user }} ({{ user.first_name }} {{ user.last_name }})
+
+    </p>
+
+   </a>
+    <form action="{% url 'addfriend' user.my_profile.user_id %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" role="button" class="btn btn-primary" value="Add friend"/>
+    </form>
+    <form action="{% url 'refuseinvite' user.my_profile.user_id %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" role="button" class="btn btn-danger" value="Refuse friend"/>
+    </form>
+    {% endfor %}
+    </div>
+
+{% endif %}
+
+{% if user.username != profile.user.username %}
+    {% if profile.user in user.my_profile.friends.all %}
+    <form action="{% url 'unfriend' profile.user_id %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" role="button" class="btn btn-danger" value="Unfriend"/>
+    </form>
+  {% endif %}
+{% endif %}
+
+{% if user.username != profile.user.username %}
+{% if request.user not in profile.user.my_profile.friends.all %}
+{% if request.user in profile.user.my_profile.invites.all %}
+<form action="{% url 'uninvite' profile.user_id %}" method="POST">
+    {% csrf_token %}
+    <input type="submit" role="button" class="btn btn-danger" value="Uninvite"/>
+</form>
+{% else %}
+<form action="{% url 'invite' profile.user_id %}" method="POST">
+    {% csrf_token %}
+    <input type="submit" role="button" class="btn btn-primary" value="Invite"/>
+</form>
+{% endif %}
+{% endif %}
+{% endif %}
+
+
+
+
+
+{% endblock %}

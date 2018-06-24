@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}Post details{% endblock %}
+
+{% block content_title %}{{event.name}}{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-3">
+        <div class="card card-profile">
+            <div class="card-avatar">
+                <img class="img" src="{{ post.author.my_profile.get_mugshot_url }}" alt="{% trans "Your mugshot" %}" />
+            </div>
+            <div class="content">
+                <h4 class="card-title">{{ post.author.username }}</h4>
+            </div>
+        </div>
+        <div class="card card-stats">
+            <div class="card-header" data-background-color="red">
+                <i class="material-icons">favorite</i>
+            </div>
+            <div class="card-content">
+                <p class="category">Likes</p>
+                <h3 class="title">{{ post.likes.count }}</h3>
+            </div>
+            <div class="card-footer">
+              {% if request.user in post.likes.all %}
+                  <form class="btn-group btn-block" action="{% url 'posts:unlike' event.pk post.pk %}" method="POST">
+                      {% csrf_token %}
+                      <button class="btn btn-danger btn-block">Dislike</button>
+                      <input type="hidden" class="btn btn-block"/>
+                  </form>
+              {% else %}
+                  <form class="btn-group btn-block" action="{% url 'posts:like' event.pk post.pk %}" method="POST">
+                      {% csrf_token %}
+                      <button class="btn btn-primary btn-block">Like</button>
+                      <input type="hidden" class="btn btn-block"/>
+                  </form>
+              {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+      <div class="card">
+          <div class="card-header">
+              <h4 class="title">{{post.author.first_name}} {{post.author.last_name}}</h4>
+          </div>
+
+          <div class="card-content">
+              {{post.content}}<br><br>
+              <i class="material-icons ">favorite</i>
+              {{ post.likes.count }}
+              <small><em>{{ post.publish_date.day }}-{{ post.publish_date.month }}-{{ post.publish_date.year }}</em></small>
+
+          </div>
+      </div>
+      {% ifequal user post.author %}
+      <form action="{% url 'posts:destroy' event.pk post.pk %}" method="POST" class="col-md-2">
+          {% csrf_token %}
+          <input type="submit" role="button" class="btn btn-danger" value="Delete post"/>
+      </form>
+      {% endifequal %}
+    </div>
+  </div>
+  <ul class="list-group">
+  <h4 class="card-header">Comments</h4>
+  {% for comment in comments %}
+
+      <div class="list-group-item list-group-item-dark flex-column align-items-start">
+      <div class="d-flex w-100 justify-content-between">
+          <div class="mb-1">
+          <img src="{{ comment.author.my_profile.get_mugshot_url }}" style="width:35px">
+              <b>{{comment.author}}</b>
+  <div>{{comment.content}}
+       </div>
+
+          </div>
+
+          <small>
+              {% ifequal user comment.author %}
+              <form action="{% url 'posts:destroycomment' event.pk post.pk comment.pk %}" method="POST">
+                  {% csrf_token %}
+                  <input type="submit" role="button" class="btn btn-danger" value="Delete comment"/>
+              </form>
+              {% endifequal %} {{ comment.publish_date.day }}-{{ comment.publish_date.month }}-{{ comment.publish_date.year }}
+          </small>
+      </div>
+
+
+     </div>
+  {% endfor %}
+
+  {% if comments.has_other_pages %}
+    <ul class="pagination">
+      {% if comments.has_previous %}
+      <li class="page-item">
+          <a class="page-link" href="?page={{ comments.previous_page_number }}" tabindex="-1">Previous</a>
+      </li>
+      {% else %}
+      <li class="page-item disabled">
+          <a class="page-link" href="#" tabindex="-1">Previous</a>
+      </li>
+      {% endif %}
+      {% for i in comments.paginator.page_range %}
+          {% if comments.number == i %}
+          <li class="page-item active">
+              <a class="page-link" href="#">{{ i }} <span class="sr-only">(current)</span></a>
+          </li>
+          {% else %}
+          <li class="page-item">
+              <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+      {% if comments.has_next %}
+      <li class="page-item">
+          <a class="page-link" href="?page={{ comments.next_page_number }}">Next</a>
+      </li>
+      {% else %}
+      <li class="page-item disabled">
+          <a class="page-link" href="#">Next</a>
+      </li>
+      {% endif %}
+    </ul>
+  {% endif %}
+  </ul>
+  <a role="button" class="btn btn-primary" href="{% url 'posts:createcomment' event.pk post.pk %}">Add comment</a>
+
+  {% endblock %}

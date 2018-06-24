@@ -1,0 +1,14 @@
+<div class="">
+  {% if user.username == profile.user.username %}
+      {% block profile_navigation_items %}
+        <a class="btn btn-primary" href="{% url 'userena_profile_detail' user.username %}">View profile</a>
+        <a class="btn btn-primary" href="{% url 'userena_profile_edit' user.username %}">Edit profile</a>
+        <a class="btn btn-primary" href="{% url 'userena_password_change' user.username %}">Change password</a>
+        <a class="btn btn-primary" href="{% url 'userena_email_change' user.username %}">Change email</a>
+      {% endblock %}
+  {% else %}
+      <a class="btn btn-primary" href="{% url 'reputation_add' profile.user.username %}">Add reputation</a></li>
+  {% endif %}
+  <a class="btn btn-primary"href="{% url 'reputation_show_received' profile.user.username %}">Received reputation</a>
+  <a class="btn btn-primary"href="{% url 'reputation_show_given' profile.user.username %}">Given reputation</a>
+</div>

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+{% block customcss %}
+<link href="{% static 'css/message_detail.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block title %}Conversation with {{ recipient }}{% endblock %}
+{% block content_title %}{% blocktrans %}Conversation with {{ recipient }}{% endblocktrans %}{% endblock %}
+{% block content %}
+<div class="messages well">
+	<ul>
+		{% for message in message_list reversed %}
+			<li class={% if message.sender == user %}"sent"{% else %}"replies"{% endif %}>
+				<img src={% if message.sender == user %}"{{ user.my_profile.get_mugshot_url }}"{% else %}"{{ recipient.my_profile.get_mugshot_url }}"{% endif %} />
+			  	<p>
+			  		{{ message }}</br>
+			  		<small>{{message.sent_at}}</small>
+			  	</p>
+			</li>
+		{% endfor %}
+	</ul>
+</div>
+<a href="{% url 'userena_umessages_compose_to' recipient.username %}" class="btn btn-primary pull-right"><span>{% trans "Reply" %}</span></a>
+{% endblock %}
+{% block customjs %}
+<script src="{% static 'javascript/messages.js' %}"></script>
+{% endblock %}
